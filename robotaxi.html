@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RobotaxiStore — ABD robotaksi filolarına yatırım</title>
+<meta name="description" content="RobotaxiStore: Türkiye'den ve dünyadan bireysel sermayeyi ABD'deki robotaksi filolarıyla buluşturmayı hedefleyen, planlama aşamasındaki yatırım platformu projesi.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-14 -14 128 128'%3E%3Crect x='-14' y='-14' width='128' height='128' rx='28' fill='%230a0c10'/%3E%3Cpath d='M31.7 15.4A39 39 0 1 0 86.8 35.6' fill='none' stroke='%23fff' stroke-width='11' stroke-linecap='round'/%3E%3Cpath d='M48.4 10.6A39 39 0 0 1 77.2 22.2' fill='none' stroke='%23ffb800' stroke-width='11' stroke-linecap='round'/%3E%3Ccircle cx='50' cy='50' r='10' fill='%23ffb800'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0c10; --bg2:#10141b; --bg3:#161b24; --line:#222a36; --text:#e9edf3; --muted:#8d97a8;
+    --accent:#ffb800; --accent-ink:#0a0c10; --blue:#5aa9ff;
+    --display:"Space Grotesk",system-ui,sans-serif; --body:Inter,system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  h1,h2,h3,.logo{font-family:var(--display);line-height:1.1;letter-spacing:-.02em;font-weight:700}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 24px;width:100%}
+  section{padding:110px 0;border-top:1px solid var(--line)}
+  @media(max-width:720px){section{padding:72px 0}}
+  .eyebrow{color:var(--accent);font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;margin-bottom:16px}
+  h2{font-size:clamp(28px,4.2vw,44px);max-width:760px}
+  .lead{color:var(--muted);font-size:18px;max-width:640px;margin-top:18px}
+  .head{margin-bottom:56px}
+  .mono{font-family:var(--mono)}
+
+  /* nav */
+  nav{position:fixed;top:0;left:0;right:0;z-index:20;background:rgba(10,12,16,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+  .logo{font-size:21px;display:flex;align-items:center;gap:10px;white-space:nowrap}
+  .logo img{height:32px}
+  .logo .mark{width:30px;height:30px;color:var(--text)}
+  .logo .word{font-size:22px;letter-spacing:-.03em}
+  .logo .sub{color:var(--muted);font-weight:500}
+  .nav-links{display:flex;gap:26px;font-size:14.5px;color:var(--muted)}
+  .nav-links a:hover{color:var(--text)}
+  .nav-right{display:flex;align-items:center;gap:14px}
+  .lang{display:flex;border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px}
+  .lang button{background:none;border:0;color:var(--muted);padding:5px 11px;border-radius:999px;font:600 12.5px var(--body);cursor:pointer}
+  .lang button.on{background:var(--text);color:var(--bg)}
+  @media(max-width:960px){.nav-links{display:none}}
+  @media(max-width:520px){nav .nav-cta{display:none}}
+
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 24px;border-radius:999px;font-weight:600;font-size:15.5px;transition:transform .15s,border-color .15s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn.primary{background:var(--accent);color:var(--accent-ink)}
+  .btn.ghost{border:1px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--muted)}
+  .btn.sm{padding:9px 16px;font-size:14px}
+
+  /* hero */
+  .hero{min-height:100vh;display:flex;align-items:center;padding:120px 0 80px;border:0;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(700px 500px at 78% 40%,rgba(255,184,0,.10),transparent 70%)}
+  .hero .wrap{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
+  @media(max-width:900px){.hero .wrap{grid-template-columns:1fr}}
+  .hero h1{font-size:clamp(40px,6.2vw,76px);margin-bottom:24px}
+  .hero h1 em{font-style:normal;color:var(--accent)}
+  .hero .lead{font-size:19px;margin:0 0 36px}
+  .btns{display:flex;gap:12px;flex-wrap:wrap}
+  .status{display:inline-flex;align-items:center;gap:10px;margin-top:28px;padding:8px 16px;border:1px solid var(--line);border-radius:999px;font-size:13.5px;color:var(--muted);background:var(--bg2)}
+  .status .pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none}
+  .map{position:relative;aspect-ratio:1/1;border:1px solid var(--line);border-radius:24px;background:var(--bg2);overflow:hidden}
+  .map canvas{width:100%;height:100%;display:block}
+  .map .cap{position:absolute;left:18px;right:18px;bottom:14px;display:flex;justify-content:space-between;font:500 11px var(--mono);color:var(--muted);letter-spacing:.08em}
+  .map .cap b{color:var(--accent);font-weight:500}
+
+  /* generic cards */
+  .grid{display:grid;gap:18px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:720px){.g2{grid-template-columns:1fr}}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .g4{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+  .card{background:var(--bg2);border:1px solid var(--line);border-radius:20px;padding:30px}
+  .card h3{font-size:20px;margin-bottom:10px}
+  .card p{color:var(--muted);font-size:15.5px}
+  .ico{width:46px;height:46px;border-radius:12px;background:rgba(255,184,0,.1);color:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+  .ico svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+  /* stats */
+  .stat{font:700 clamp(38px,5vw,56px)/1 var(--display);color:var(--accent);margin-bottom:14px;letter-spacing:-.02em}
+  .source{margin-top:22px;font-size:13px;color:var(--muted);font-style:italic}
+
+  /* bridge */
+  .bridge{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:14px;align-items:stretch;margin-bottom:22px}
+  .arrow{display:flex;align-items:center;color:var(--accent);font-size:26px}
+  @media(max-width:860px){.bridge{grid-template-columns:1fr}.arrow{justify-content:center;transform:rotate(90deg)}}
+  .step .n{font:500 14px var(--mono);color:var(--accent);display:block;margin-bottom:14px}
+
+  /* revenue */
+  .rev{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center}
+  @media(max-width:860px){.rev{grid-template-columns:1fr}}
+  .flow{display:flex;flex-direction:column;gap:10px}
+  .fbox{border:1px solid var(--line);border-radius:14px;padding:18px 22px;font-weight:600;background:var(--bg2)}
+  .fbox.hl{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .fbox small{display:block;font-weight:400;color:var(--muted);font-size:13.5px;margin-top:2px}
+  .fdown{text-align:center;color:var(--muted)}
+  .revcard{border:1px solid rgba(255,184,0,.35);background:linear-gradient(160deg,rgba(255,184,0,.08),transparent 60%),var(--bg2);border-radius:22px;padding:36px}
+  .revcard .big{font:700 64px/1 var(--display);color:var(--accent);margin-bottom:14px}
+  .revcard p{color:var(--text)}
+  .revcard .fine{color:var(--muted);font-size:14px;margin-top:16px;font-style:italic}
+
+  /* roadmap */
+  .road{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  @media(max-width:900px){.road{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.road{grid-template-columns:1fr}}
+  .ph{border-top:2px solid var(--line);padding-top:20px}
+  .ph.on{border-color:var(--accent)}
+  .ph .tag{font:500 12px var(--mono);color:var(--accent);letter-spacing:.1em}
+  .ph .t{font-size:13px;color:var(--muted);margin-bottom:10px}
+  .ph h3{font-size:21px;margin-bottom:8px}
+  .ph p{color:var(--muted);font-size:15px}
+
+  /* scenarios */
+  .card.mid{border-color:var(--accent);background:linear-gradient(160deg,rgba(255,184,0,.08),transparent 60%),var(--bg2)}
+  .principles{margin-top:18px;display:flex;gap:16px;align-items:flex-start;border:1px dashed var(--line);border-radius:16px;padding:20px 24px;color:var(--muted);font-size:15px}
+
+  /* founder */
+  .founder{display:grid;grid-template-columns:200px 1fr;gap:44px;align-items:center}
+  .founder .pic{width:200px;height:200px;border-radius:24px;object-fit:cover;background:var(--bg3);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px}
+  .founder h3{font-size:30px;margin-bottom:6px}
+  .founder .role{color:var(--accent);margin-bottom:14px;font-weight:600}
+  .founder p{color:var(--muted);max-width:620px}
+  @media(max-width:720px){.founder{grid-template-columns:1fr}}
+
+  /* contact */
+  .contact-box{border-radius:28px;padding:56px;background:linear-gradient(135deg,#1a1606,#0f1218 55%);border:1px solid rgba(255,184,0,.3);display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center}
+  @media(max-width:860px){.contact-box{grid-template-columns:1fr;padding:36px 26px}}
+  .contact-box h2{font-size:clamp(28px,3.6vw,40px)}
+  .mailrow{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:8px 8px 8px 20px;flex-wrap:wrap}
+  .mailrow a{font:500 15px var(--mono);flex:1;min-width:0;overflow-wrap:anywhere}
+  .mailrow button{background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:9px 16px;font:600 14px var(--body);cursor:pointer}
+  .disclaimer{color:var(--muted);font-size:13px;margin-top:28px;max-width:820px;line-height:1.7}
+
+  footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:14px}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s,transform .7s}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+
+<!-- ========== NAV ========== -->
+<nav>
+  <div class="wrap">
+    <a href="#top" class="logo">
+      <svg class="mark" viewBox="-6 -6 112 112" aria-hidden="true"><path d="M31.7 15.4A39 39 0 1 0 86.8 35.6" fill="none" stroke="currentColor" stroke-width="10.5" stroke-linecap="round"/><path d="M48.4 10.6A39 39 0 0 1 77.2 22.2" fill="none" stroke="var(--accent)" stroke-width="10.5" stroke-linecap="round"/><circle cx="50" cy="50" r="10" fill="var(--accent)"/></svg><span class="word">robotaxi<span class="sub">store</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="#firsat" data-i="nav.opp"></a>
+      <a href="#model" data-i="nav.model"></a>
+      <a href="#yol" data-i="nav.road"></a>
+      <a href="#risk" data-i="nav.risk"></a>
+      <a href="#iletisim" data-i="nav.contact"></a>
+    </div>
+    <div class="nav-right">
+      <div class="lang">
+        <button data-l="tr" class="on">TR</button><button data-l="en">EN</button><button data-l="de">DE</button>
+      </div>
+      <a href="#iletisim" class="btn primary sm nav-cta" data-i="nav.cta"></a>
+    </div>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow" data-i="hero.eye"></p>
+      <h1 data-i="hero.h1"></h1>
+      <p class="lead" data-i="hero.sub"></p>
+      <div class="btns">
+        <a href="#model" class="btn primary" data-i="hero.c1"></a>
+        <a href="#iletisim" class="btn ghost" data-i="hero.c2"></a>
+      </div>
+      <p class="status"><span class="pulse"></span><span data-i="hero.status"></span></p>
+    </div>
+    <div class="map">
+      <canvas id="fleet"></canvas>
+      <div class="cap"><span data-i="hero.cap1"></span><b data-i="hero.cap2"></b></div>
+    </div>
+  </div>
+</header>
+
+<!-- ========== FIRSAT ========== -->
+<section id="firsat">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow reveal" data-i="opp.eye"></p>
+      <h2 class="reveal" data-i="opp.h2"></h2>
+      <p class="lead reveal" data-i="opp.lead"></p>
+    </div>
+    <div class="grid g3">
+      <div class="card reveal"><div class="stat">$45.7B</div><p data-i="opp.s1"></p></div>
+      <div class="card reveal"><div class="stat">~$415B</div><p data-i="opp.s2"></p></div>
+      <div class="card reveal"><div class="stat">500,000+</div><p data-i="opp.s3"></p></div>
+    </div>
+    <p class="source reveal" data-i="opp.src"></p>
+  </div>
+</section>
+
+<!-- ========== MODEL ========== -->
+<section id="model">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow reveal" data-i="model.eye"></p>
+      <h2 class="reveal" data-i="model.h2"></h2>
+    </div>
+    <div class="bridge">
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 2.6 4.3 5.7 4.3 9s-1.5 6.4-4.3 9c-2.8-2.6-4.3-5.7-4.3-9S9.2 5.6 12 3z"/></svg></div>
+        <h3 data-i="model.b1h"></h3><p data-i="model.b1d"></p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l9 4.5-9 4.5-9-4.5L12 3z"/><path d="M3 12l9 4.5 9-4.5"/><path d="M3 16.5L12 21l9-4.5"/></svg></div>
+        <h3 data-i="model.b2h"></h3><p data-i="model.b2d"></p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 16V11l2-5h12l2 5v5"/><path d="M4 16h16"/><circle cx="7.5" cy="16.5" r="1.6"/><circle cx="16.5" cy="16.5" r="1.6"/><path d="M6 11h12"/></svg></div>
+        <h3 data-i="model.b3h"></h3><p data-i="model.b3d"></p>
+      </div>
+    </div>
+    <div class="grid g4">
+      <div class="card step reveal"><span class="n">01</span><h3 data-i="model.s1h"></h3><p data-i="model.s1d"></p></div>
+      <div class="card step reveal"><span class="n">02</span><h3 data-i="model.s2h"></h3><p data-i="model.s2d"></p></div>
+      <div class="card step reveal"><span class="n">03</span><h3 data-i="model.s3h"></h3><p data-i="model.s3d"></p></div>
+      <div class="card step reveal"><span class="n">04</span><h3 data-i="model.s4h"></h3><p data-i="model.s4d"></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== GELİR ========== -->
+<section id="gelir">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow reveal" data-i="rev.eye"></p>
+      <h2 class="reveal" data-i="rev.h2"></h2>
+    </div>
+    <div class="rev">
+      <div class="flow reveal">
+        <div class="fbox" data-i="rev.f1"></div>
+        <div class="fdown">↓</div>
+        <div class="fbox"><span data-i="rev.f2"></span><small data-i="rev.f2s"></small></div>
+        <div class="fdown">↓</div>
+        <div class="fbox hl" data-i="rev.f3"></div>
+      </div>
+      <div class="revcard reveal">
+        <div class="big">25–30%</div>
+        <p data-i="rev.note"></p>
+        <p class="fine" data-i="rev.fine"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== YOL HARİTASI ========== -->
+<section id="yol">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow reveal" data-i="road.eye"></p>
+      <h2 class="reveal" data-i="road.h2"></h2>
+    </div>
+    <div class="road">
+      <div class="ph on reveal"><div class="tag" data-i="road.p1"></div><div class="t" data-i="road.t1"></div><h3 data-i="road.h1"></h3><p data-i="road.d1"></p></div>
+      <div class="ph reveal"><div class="tag" data-i="road.p2"></div><div class="t" data-i="road.t2"></div><h3 data-i="road.h2b"></h3><p data-i="road.d2"></p></div>
+      <div class="ph reveal"><div class="tag" data-i="road.p3"></div><div class="t" data-i="road.t3"></div><h3 data-i="road.h3"></h3><p data-i="road.d3"></p></div>
+      <div class="ph reveal"><div class="tag" data-i="road.p4"></div><div class="t" data-i="road.t4"></div><h3 data-i="road.h4"></h3><p data-i="road.d4"></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== RİSK ========== -->
+<section id="risk">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow reveal" data-i="risk.eye"></p>
+      <h2 class="reveal" data-i="risk.h2"></h2>
+      <p class="lead reveal" data-i="risk.lead"></p>
+    </div>
+    <div class="grid g2">
+      <div class="card reveal"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3v18M8 21h8"/><path d="M5 7h14"/><path d="M3 7l2.5 5.5L8 7M16 7l2.5 5.5L21 7"/></svg></div><h3 data-i="risk.r1h"></h3><p data-i="risk.r1d"></p></div>
+      <div class="card reveal"><div class="ico"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 12h7M9 15.5h7"/></svg></div><h3 data-i="risk.r2h"></h3><p data-i="risk.r2d"></p></div>
+      <div class="card reveal"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4.5"/></svg></div><h3 data-i="risk.r3h"></h3><p data-i="risk.r3d"></p></div>
+      <div class="card reveal"><div class="ico"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><h3 data-i="risk.r4h"></h3><p data-i="risk.r4d"></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FİNANSAL YAKLAŞIM ========== -->
+<section id="finans">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow reveal" data-i="fin.eye"></p>
+      <h2 class="reveal" data-i="fin.h2"></h2>
+    </div>
+    <div class="grid g3">
+      <div class="card reveal"><h3 data-i="fin.c1h"></h3><p data-i="fin.c1d"></p></div>
+      <div class="card mid reveal"><h3 data-i="fin.c2h"></h3><p data-i="fin.c2d"></p></div>
+      <div class="card reveal"><h3 data-i="fin.c3h"></h3><p data-i="fin.c3d"></p></div>
+    </div>
+    <div class="principles reveal"><span style="color:var(--accent)">●</span><span data-i="fin.pr"></span></div>
+  </div>
+</section>
+
+<!-- ========== İŞ BİRLİĞİ ========== -->
+<section id="isbirligi">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow reveal" data-i="par.eye"></p>
+      <h2 class="reveal" data-i="par.h2"></h2>
+    </div>
+    <div class="grid g3">
+      <div class="card reveal"><div class="ico"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></div><h3 data-i="par.p1h"></h3><p data-i="par.p1d"></p></div>
+      <div class="card reveal"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg></div><h3 data-i="par.p2h"></h3><p data-i="par.p2d"></p></div>
+      <div class="card reveal"><div class="ico"><svg viewBox="0 0 24 24"><path d="M9.5 14.5l5-5"/><path d="M13 6l1.6-1.6a4 4 0 015.7 5.7L18.7 11.7"/><path d="M11 18l-1.6 1.6a4 4 0 01-5.7-5.7L5.3 12.3"/></svg></div><h3 data-i="par.p3h"></h3><p data-i="par.p3d"></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== KURUCU ========== -->
+<section id="kurucu">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow reveal" data-i="fo.eye"></p>
+      <h2 class="reveal" data-i="fo.h2"></h2>
+    </div>
+    <div class="founder reveal">
+      <!-- Fotoğrafını "murat.jpg" adıyla yükleyip aşağıdaki satırı <img class="pic" src="murat.jpg" alt="Murat Arda Dinç"> ile değiştir -->
+      <div class="pic" data-i="fo.photo"></div>
+      <div>
+        <h3>Murat Arda Dinç</h3>
+        <p class="role" data-i="fo.role"></p>
+        <p data-i="fo.bio"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== İLETİŞİM ========== -->
+<section id="iletisim">
+  <div class="wrap">
+    <div class="contact-box reveal">
+      <div>
+        <p class="eyebrow" data-i="ct.eye"></p>
+        <h2 data-i="ct.h2"></h2>
+        <p class="lead" data-i="ct.p"></p>
+      </div>
+      <div>
+        <div class="mailrow">
+          <a href="mailto:murat.dinc@robotaxistore.net">murat.dinc@robotaxistore.net</a>
+          <button id="copy" data-i="ct.copy"></button>
+        </div>
+        <div class="btns" style="margin-top:14px">
+          <a class="btn primary" href="mailto:murat.dinc@robotaxistore.net?subject=RobotaxiStore%20-%20Investor%20deck" data-i="ct.deck"></a>
+        </div>
+      </div>
+    </div>
+    <p class="disclaimer" data-i="ct.disc"></p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="yr"></span> RobotaxiStore</span>
+    <span data-i="ft.city"></span>
+  </div>
+</footer>
+
+<script>
+/* ============ ÇEVİRİLER — metinleri buradan düzenle ============ */
+const T = {
+nav:{
+  opp:{tr:"Fırsat",en:"Opportunity",de:"Chance"},
+  model:{tr:"Model",en:"Model",de:"Modell"},
+  road:{tr:"Yol Haritası",en:"Roadmap",de:"Fahrplan"},
+  risk:{tr:"Risk & Uyum",en:"Risk & Compliance",de:"Risiko & Compliance"},
+  contact:{tr:"İletişim",en:"Contact",de:"Kontakt"},
+  cta:{tr:"Görüşelim",en:"Let's talk",de:"Gespräch"}
+},
+hero:{
+  eye:{tr:"Otonom mobilite · Türkiye → ABD",en:"Autonomous mobility · Türkiye → USA",de:"Autonome Mobilität · Türkei → USA"},
+  h1:{tr:"Amerika'nın <em>robotaksi</em> filolarına ortak olun.",en:"Become a partner in America's <em>robotaxi</em> fleets.",de:"Werden Sie Partner von Amerikas <em>Robotaxi</em>-Flotten."},
+  sub:{tr:"RobotaxiStore, Türkiye'den ve dünyadan bireysel sermayeyi ABD'deki lisanslı otonom operatörlerin filo gelirleriyle buluşturmayı hedefleyen, ortaklık temelli bir yatırım platformu projesi.",en:"RobotaxiStore is a partnership-based investment platform project that aims to connect individual capital from Türkiye and worldwide to the fleet revenue of licensed autonomous operators in the US.",de:"RobotaxiStore ist ein partnerschaftsbasiertes Investitionsplattform-Projekt mit dem Ziel, privates Kapital aus der Türkei und weltweit mit den Flottenerträgen lizenzierter autonomer Betreiber in den USA zu verbinden."},
+  status:{tr:"Planlama aşaması · Henüz lisans veya izin alınmadı, yatırım kabul edilmiyor",en:"Planning stage · No licenses or permits obtained yet; no investments accepted",de:"Planungsphase · Noch keine Lizenzen oder Genehmigungen; keine Investitionen möglich"},
+  c1:{tr:"Modeli inceleyin",en:"Explore the model",de:"Modell entdecken"},
+  c2:{tr:"İletişime geçin",en:"Contact us",de:"Kontakt aufnehmen"},
+  cap1:{tr:"FİLO GÖSTERİMİ",en:"FLEET ILLUSTRATION",de:"FLOTTENDARSTELLUNG"},
+  cap2:{tr:"ÖRNEK · GERÇEK VERİ DEĞİL",en:"SAMPLE · NOT REAL DATA",de:"BEISPIEL · KEINE ECHTDATEN"}
+},
+opp:{
+  eye:{tr:"Neden şimdi",en:"Why now",de:"Warum jetzt"},
+  h2:{tr:"Otonom mobilite hızla yeni bir yatırım alanına dönüşüyor.",en:"Autonomous mobility is fast becoming a new investment arena.",de:"Autonome Mobilität wird rasant zu einem neuen Investitionsfeld."},
+  lead:{tr:"Sektörün büyüklüğüne dair tahminler geniş bir aralıkta değişiyor. Aşağıdaki rakamları kesin bilgi olarak değil, yön göstergesi olarak okuyun.",en:"Estimates of the sector's size vary widely. Read the figures below as a directional signal, not settled fact.",de:"Schätzungen zur Marktgröße schwanken stark. Lesen Sie die Zahlen als Richtwert, nicht als feststehende Tatsache."},
+  s1:{tr:"MarketsandMarkets: 2030 küresel robotaksi pazarı tahmini",en:"MarketsandMarkets: 2030 global robotaxi market forecast",de:"MarketsandMarkets: Prognose globaler Robotaxi-Markt 2030"},
+  s2:{tr:"Goldman Sachs: 2035 küresel robotaksi pazarı öngörüsü (ABD payı ~$48B)",en:"Goldman Sachs: 2035 global robotaxi market outlook (US share ~$48B)",de:"Goldman Sachs: Ausblick globaler Robotaxi-Markt 2035 (US-Anteil ~$48 Mrd.)"},
+  s3:{tr:"Waymo'nun 2026'da ABD'de ulaştığı haftalık ücretli yolculuk sayısı",en:"Weekly paid rides Waymo reached in the US in 2026",de:"Wöchentliche bezahlte Waymo-Fahrten in den USA 2026"},
+  src:{tr:"Kaynaklar: MarketsandMarkets Robotaxi Market raporu; Goldman Sachs Research (Nis. 2026); Waymo açıklamaları (Mar. 2026).",en:"Sources: MarketsandMarkets Robotaxi Market report; Goldman Sachs Research (Apr. 2026); Waymo announcements (Mar. 2026).",de:"Quellen: MarketsandMarkets Robotaxi-Market-Bericht; Goldman Sachs Research (Apr. 2026); Waymo-Mitteilungen (Mär. 2026)."}
+},
+model:{
+  eye:{tr:"Planlanan model",en:"Planned model",de:"Geplantes Modell"},
+  h2:{tr:"Sermaye ile operasyonu ayıran bir köprü modeli.",en:"A bridge model that separates capital from operations.",de:"Ein Brückenmodell, das Kapital und Betrieb trennt."},
+  b1h:{tr:"Bireysel yatırımcı",en:"Individual investor",de:"Privatinvestor"},
+  b1d:{tr:"Türkiye'den ve farklı ülkelerden yatırımcılar platform üzerinden sermaye taahhüdünde bulunur.",en:"Investors from Türkiye and other countries commit capital through the platform.",de:"Investoren aus der Türkei und anderen Ländern stellen über die Plattform Kapital bereit."},
+  b2h:{tr:"ABD'de kurulacak yasal yapı",en:"Planned US legal entity",de:"Geplante US-Rechtseinheit"},
+  b2d:{tr:"Sermayenin, ABD'de kurulacak bir yapı (SPV/LLC) üzerinden araç edinimine yönlendirilmesi planlanıyor.",en:"Capital is planned to be directed to vehicle acquisition via a US structure (SPV/LLC) to be established.",de:"Das Kapital soll über eine noch zu gründende US-Struktur (SPV/LLC) in den Fahrzeugerwerb fließen."},
+  b3h:{tr:"Lisanslı operasyon ortağı",en:"Licensed operating partner",de:"Lizenzierter Betriebspartner"},
+  b3d:{tr:"Araçların, otonom işletme ruhsatına sahip bir operatörün filosunda hizmet vermesi hedefleniyor.",en:"Vehicles are intended to run in the fleet of an operator holding an autonomous operating license.",de:"Die Fahrzeuge sollen in der Flotte eines Betreibers mit Lizenz für autonomen Betrieb fahren."},
+  s1h:{tr:"Sermaye taahhüdü",en:"Capital commitment",de:"Kapitalzusage"},
+  s1d:{tr:"Yatırımcı belirli bir araç ya da sermaye payı için taahhütte bulunur.",en:"The investor commits to a specific vehicle or capital share.",de:"Der Investor sagt einen bestimmten Fahrzeug- oder Kapitalanteil zu."},
+  s2h:{tr:"Filoya katılım",en:"Joining the fleet",de:"Aufnahme in die Flotte"},
+  s2d:{tr:"Sermaye ABD'deki yapı aracılığıyla lisanslı operatörün filosuna yönlendirilir.",en:"Capital is routed through the US entity into the licensed operator's fleet.",de:"Das Kapital fließt über die US-Einheit in die Flotte des Betreibers."},
+  s3h:{tr:"Uçtan uca operasyon",en:"End-to-end operations",de:"Durchgängiger Betrieb"},
+  s3d:{tr:"Şarj, bakım, sigorta ve filo yönetimi koordine edilir. Yatırımcı operasyonla uğraşmaz.",en:"Charging, maintenance, insurance and fleet management are coordinated. The investor handles no operations.",de:"Laden, Wartung, Versicherung und Flottenmanagement werden koordiniert. Der Investor hat keine operativen Aufgaben."},
+  s4h:{tr:"Paylaşım ve raporlama",en:"Payout & reporting",de:"Ausschüttung & Bericht"},
+  s4d:{tr:"Yolculuk gelirleri düzenli aralıklarla paylaşılır, şeffaf performans raporu sunulur.",en:"Ride revenue is shared at regular intervals with transparent performance reports.",de:"Fahrterlöse werden regelmäßig ausgeschüttet, mit transparenten Leistungsberichten."}
+},
+rev:{
+  eye:{tr:"Gelir mantığı",en:"Revenue logic",de:"Ertragslogik"},
+  h2:{tr:"Sektörde zaten var olan bir paylaşım yapısına dayanıyor.",en:"Built on a revenue-share structure already seen in the industry.",de:"Basiert auf einem in der Branche bereits bekannten Erlösmodell."},
+  f1:{tr:"Yolculuk geliri",en:"Ride revenue",de:"Fahrterlöse"},
+  f2:{tr:"Operasyon payı",en:"Operating share",de:"Betriebsanteil"},
+  f2s:{tr:"şarj, bakım, sigorta, ruhsat",en:"charging, maintenance, insurance, licensing",de:"Laden, Wartung, Versicherung, Lizenz"},
+  f3:{tr:"Yatırımcı payı",en:"Investor share",de:"Investorenanteil"},
+  note:{tr:"Tesla'nın robotaksi ağı için açıkladığı operatör payı: sektörde kamuya açık bir emsal.",en:"The operator share Tesla announced for its robotaxi network: a public industry benchmark.",de:"Der von Tesla für sein Robotaxi-Netz genannte Betreiberanteil: ein öffentlicher Branchenmaßstab."},
+  fine:{tr:"Platformun kesin paylaşım oranları ortaklık görüşmeleri ve pilot verileriyle netleştirilip yatırımcılara şeffaf şekilde bildirilecektir.",en:"Our exact split will be set through partner negotiations and pilot data, and disclosed transparently.",de:"Die genaue Aufteilung wird durch Partnerverhandlungen und Pilotdaten festgelegt und transparent mitgeteilt."}
+},
+road:{
+  eye:{tr:"Yol haritası",en:"Roadmap",de:"Fahrplan"},
+  h2:{tr:"Aşamalı ve doğrulamaya dayalı bir büyüme planı.",en:"A phased, validation-driven growth plan.",de:"Ein stufenweiser, validierungsbasierter Wachstumsplan."},
+  p1:{tr:"FAZ 1",en:"PHASE 1",de:"PHASE 1"}, t1:{tr:"0–6 ay",en:"0–6 months",de:"0–6 Monate"},
+  h1:{tr:"Temel kurulum",en:"Foundation",de:"Grundlage"},
+  d1:{tr:"Operatör ortaklığı görüşmeleri, ABD hukuki yapısı, SEC/SPK uyum görüşü ve lisans/izin başvuruları, ardından 1–5 araçlık pilot.",en:"Operator partnership talks, US legal setup, SEC/CMB compliance opinion and license/permit applications, then a 1–5 vehicle pilot.",de:"Betreibergespräche, US-Rechtsstruktur, SEC/CMB-Gutachten und Lizenz-/Genehmigungsanträge, danach Pilot mit 1–5 Fahrzeugen."},
+  p2:{tr:"FAZ 2",en:"PHASE 2",de:"PHASE 2"}, t2:{tr:"6–12 ay",en:"6–12 months",de:"6–12 Monate"},
+  h2b:{tr:"Doğrulama",en:"Validation",de:"Validierung"},
+  d2:{tr:"Pilot verisiyle doğrulanmış birim ekonomisi, nitelikli/kurumsal yatırımcılarla dar kapsamlı tur.",en:"Unit economics validated by pilot data; a narrow round with qualified/institutional investors.",de:"Durch Pilotdaten validierte Unit Economics; enge Runde mit qualifizierten/institutionellen Investoren."},
+  p3:{tr:"FAZ 3",en:"PHASE 3",de:"PHASE 3"}, t3:{tr:"12–24 ay",en:"12–24 months",de:"12–24 Monate"},
+  h3:{tr:"Uyumlu genişleme",en:"Compliant expansion",de:"Regelkonforme Expansion"},
+  d3:{tr:"Düzenleyici izinler netleştikçe kontrollü biçimde daha geniş yatırımcı erişimi.",en:"Broader, controlled investor access as regulatory approvals become clear.",de:"Breiterer, kontrollierter Investorenzugang, sobald Genehmigungen klar sind."},
+  p4:{tr:"FAZ 4",en:"PHASE 4",de:"PHASE 4"}, t4:{tr:"24+ ay",en:"24+ months",de:"24+ Monate"},
+  h4:{tr:"Ölçek",en:"Scale",de:"Skalierung"},
+  d4:{tr:"Çoklu şehir, büyüyen filo ve kurumsal nitelikte bir 'Mobility Income' varlık sınıfı.",en:"Multiple cities, a growing fleet and an institutional-grade 'Mobility Income' asset class.",de:"Mehrere Städte, wachsende Flotte und eine institutionelle Anlageklasse 'Mobility Income'."}
+},
+risk:{
+  eye:{tr:"Risk ve uyum",en:"Risk & compliance",de:"Risiko & Compliance"},
+  h2:{tr:"Riskleri gizlemiyor, baştan yönetiyoruz.",en:"We don't hide risk, we manage it upfront.",de:"Wir verbergen Risiken nicht, wir steuern sie von Anfang an."},
+  lead:{tr:"Ciddiye aldığımız her risk için somut bir yönetim yaklaşımımız var.",en:"For every risk we take seriously, we have a concrete way of managing it.",de:"Für jedes ernst genommene Risiko haben wir einen konkreten Ansatz."},
+  r1h:{tr:"Regülasyon riski",en:"Regulatory risk",de:"Regulatorisches Risiko"},
+  r1d:{tr:"Otonom işletme izinleri eyalet ve şehre göre değişir. Bu riski, teknolojiyi kendimiz geliştirmeden, ruhsatlı operatörlerle çalışarak yönetmeyi planlıyoruz.",en:"Autonomous permits vary by state and city. We plan to manage this by working with licensed operators rather than building the technology ourselves.",de:"Genehmigungen variieren je nach Staat und Stadt. Wir planen, dies über lizenzierte Betreiber statt eigener Technologie zu steuern."},
+  r2h:{tr:"Menkul kıymet uyumu",en:"Securities compliance",de:"Wertpapier-Compliance"},
+  r2d:{tr:"Gerekli lisans ve izinler henüz alınmadı. Faaliyete başlamadan önce ABD (SEC) ve Türkiye (SPK) mevzuatı için bağımsız hukuki görüş alınacak ve gerekli izinlere başvurulacak. Halka açık pazarlama yapılmaz.",en:"The required licenses and permits have not yet been obtained. Before any activity, an independent legal opinion on US (SEC) and Turkish (CMB) rules will be obtained and the necessary permits applied for. No broad public marketing.",de:"Die erforderlichen Lizenzen und Genehmigungen liegen noch nicht vor. Vor Aufnahme der Tätigkeit werden ein unabhängiges Rechtsgutachten zu SEC- und CMB-Vorschriften eingeholt und die nötigen Genehmigungen beantragt. Keine breite öffentliche Vermarktung."},
+  r3h:{tr:"Operasyonel doğrulama",en:"Operational validation",de:"Operative Validierung"},
+  r3d:{tr:"Sigorta, bakım ve doluluk varsayımları, büyümeden önce küçük pilotlarla gerçek veriyle test edilir.",en:"Insurance, maintenance and utilization assumptions are tested with real pilot data before scaling.",de:"Annahmen zu Versicherung, Wartung und Auslastung werden vor der Skalierung mit Pilotdaten getestet."},
+  r4h:{tr:"Şeffaflık ilkesi",en:"Transparency principle",de:"Transparenzprinzip"},
+  r4d:{tr:"Muhafazakâr senaryolar kullanılır. Garantili getiri veya sabit oran vaadi verilmez.",en:"Conservative scenarios are used. No guaranteed return or fixed rate is promised.",de:"Konservative Szenarien. Keine garantierte Rendite und kein fester Zinssatz."}
+},
+fin:{
+  eye:{tr:"Finansal yaklaşım",en:"Financial approach",de:"Finanzieller Ansatz"},
+  h2:{tr:"Varsayıma değil, doğrulanmış veriye dayalı modelleme.",en:"Modeling built on validated data, not assumptions.",de:"Modellierung auf Basis validierter Daten, nicht Annahmen."},
+  c1h:{tr:"Muhafazakâr",en:"Conservative",de:"Konservativ"},
+  c1d:{tr:"Düşük doluluk, yüksek işletme maliyeti. Alt sınır senaryo olarak modellenir.",en:"Low utilization, high operating cost. Modeled as the floor scenario.",de:"Geringe Auslastung, hohe Kosten. Als Untergrenze modelliert."},
+  c2h:{tr:"Temel senaryo",en:"Base case",de:"Basisszenario"},
+  c2d:{tr:"Pilot verisiyle uyumlu, sektör emsalleriyle karşılaştırılmış orta varsayımlar.",en:"Mid-range assumptions aligned with pilot data and checked against industry benchmarks.",de:"Mittlere Annahmen, abgestimmt auf Pilotdaten und Branchenwerte."},
+  c3h:{tr:"İyimser",en:"Upside",de:"Optimistisch"},
+  c3d:{tr:"Yüksek talep, düşük aksama. Üst sınır olarak sunulur, taahhüt olarak değil.",en:"High demand, low disruption. Shown as a ceiling, not a commitment.",de:"Hohe Nachfrage, geringe Störungen. Als Obergrenze, nicht als Zusage."},
+  pr:{tr:"İlkeler: aylık/üç aylık şeffaf raporlama · varsayımlar pilot verisiyle düzenli güncellenir · paylaşım net (brüt değil) gelir üzerinden · garantili veya sabit getiri vaadi yok.",en:"Principles: transparent monthly/quarterly reporting · assumptions updated with pilot data · payouts on net (not gross) revenue · no guaranteed or fixed return.",de:"Grundsätze: transparente monatliche/vierteljährliche Berichte · Annahmen mit Pilotdaten aktualisiert · Ausschüttung auf Netto- (nicht Brutto-)Erlös · keine garantierte oder feste Rendite."}
+},
+par:{
+  eye:{tr:"İş birliği alanları",en:"Ways to collaborate",de:"Formen der Zusammenarbeit"},
+  h2:{tr:"Değerlendirmenizi istediğimiz üç model.",en:"Three models we'd like you to consider.",de:"Drei Modelle zur Prüfung."},
+  p1h:{tr:"Doğrudan yatırım",en:"Direct investment",de:"Direktinvestition"},
+  p1d:{tr:"Platformun kuruluş sermayesine veya ilk pilot filoya doğrudan katılım.",en:"Direct participation in the platform's founding capital or first pilot fleet.",de:"Direkte Beteiligung am Gründungskapital oder an der ersten Pilotflotte."},
+  p2h:{tr:"Yapılandırılmış finansman",en:"Structured financing",de:"Strukturierte Finanzierung"},
+  p2d:{tr:"Filo/varlık bazlı finansman: borç, gelir payı veya melez enstrümanlar.",en:"Fleet/asset-based financing: debt, revenue share or hybrid instruments.",de:"Flotten-/Asset-basierte Finanzierung: Fremdkapital, Erlösbeteiligung oder Hybride."},
+  p3h:{tr:"Ortak geliştirme",en:"Joint development",de:"Gemeinsame Entwicklung"},
+  p3d:{tr:"Operatör ilişkileri, hukuki yapı veya uluslararası dağıtımda stratejik iş birliği.",en:"Strategic collaboration on operator relations, legal structuring or international distribution.",de:"Strategische Zusammenarbeit bei Betreibern, Rechtsstruktur oder internationalem Vertrieb."}
+},
+fo:{
+  eye:{tr:"Kurucu",en:"Founder",de:"Gründer"},
+  h2:{tr:"Havacılıktan gelen bir ulaşım bakışı.",en:"A mobility vision shaped by aviation.",de:"Eine Mobilitätsvision aus der Luftfahrt."},
+  photo:{tr:"Fotoğraf",en:"Photo",de:"Foto"},
+  role:{tr:"Kurucu, RobotaxiStore",en:"Founder, RobotaxiStore",de:"Gründer, RobotaxiStore"},
+  bio:{tr:"İstanbul Medipol Üniversitesi Sivil Hava Ulaştırma İşletmeciliği mezunu. Pegasus Hava Yolları'ndaki stajında ulaşım operasyonlarını yakından tanıdı. Fenerbahçe Üniversitesi'nde Halkla İlişkiler ve Reklamcılık okuyor.",en:"Graduate of Civil Air Transportation Management at Istanbul Medipol University. Gained first-hand insight into transport operations during his internship at Pegasus Airlines. Studying Public Relations and Advertising at Fenerbahçe University.",de:"Absolvent im Bereich Ziviles Luftverkehrsmanagement (Istanbul Medipol Universität). Praktikum bei Pegasus Airlines mit Einblick in Verkehrsbetrieb. Studiert PR und Werbung an der Fenerbahçe Universität."}
+},
+ct:{
+  eye:{tr:"İletişim",en:"Contact",de:"Kontakt"},
+  h2:{tr:"Görüşelim.",en:"Let's talk.",de:"Lassen Sie uns sprechen."},
+  p:{tr:"30 dakikalık bir tanışma görüşmesinde modeli ve uyum sürecini birlikte değerlendirelim.",en:"In a 30-minute intro call, let's go through the model and the compliance process together.",de:"In einem 30-minütigen Gespräch besprechen wir Modell und Compliance-Prozess."},
+  copy:{tr:"Kopyala",en:"Copy",de:"Kopieren"},
+  copied:{tr:"Kopyalandı ✓",en:"Copied ✓",de:"Kopiert ✓"},
+  deck:{tr:"Yatırımcı sunumunu isteyin",en:"Request the investor deck",de:"Investoren-Deck anfordern"},
+  disc:{tr:"RobotaxiStore planlama aşamasında bir projedir. Henüz herhangi bir lisans, izin veya ruhsat alınmamıştır ve yatırım kabul edilmemektedir. Bu site kavramsal bir ortaklık değerlendirmesi içindir. Yatırım tavsiyesi veya menkul kıymet satış teklifi değildir. Herhangi bir sermaye taahhüdünden önce bağımsız hukuki ve finansal danışmanlık alınması önerilir.",en:"RobotaxiStore is a project in the planning stage. No licenses, permits or authorizations have been obtained yet, and no investments are being accepted. This site is for conceptual partnership evaluation only. It is not investment advice or an offer to sell securities. Independent legal and financial advice is recommended before any capital commitment.",de:"RobotaxiStore ist ein Projekt in der Planungsphase. Es wurden noch keine Lizenzen oder Genehmigungen erteilt, und es werden keine Investitionen angenommen. Diese Website dient nur der konzeptionellen Partnerschaftsbewertung. Sie ist keine Anlageberatung und kein Angebot zum Verkauf von Wertpapieren. Vor jeder Kapitalzusage wird unabhängige Rechts- und Finanzberatung empfohlen."}
+},
+ft:{ city:{tr:"İstanbul, Türkiye",en:"Istanbul, Türkiye",de:"Istanbul, Türkei"} }
+};
+
+let lang = "tr";
+function setLang(l){
+  lang = l; document.documentElement.lang = l;
+  document.querySelectorAll("[data-i]").forEach(el=>{
+    const [a,b] = el.dataset.i.split("."); const v = T[a] && T[a][b];
+    if(v) el.innerHTML = v[l];
+  });
+  document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on", b.dataset.l===l));
+  try{ localStorage.setItem("lang", l); }catch(e){}
+}
+document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>setLang(b.dataset.l));
+let saved="tr"; try{ saved = localStorage.getItem("lang") || "tr"; }catch(e){}
+setLang(["tr","en","de"].includes(saved)?saved:"tr");
+document.getElementById("yr").textContent = new Date().getFullYear();
+
+document.getElementById("copy").onclick = function(){
+  const btn=this;
+  const done=()=>{btn.textContent=T.ct.copied[lang]; setTimeout(()=>btn.textContent=T.ct.copy[lang],1800);};
+  if(navigator.clipboard) navigator.clipboard.writeText("murat.dinc@robotaxistore.net").then(done,done); else done();
+};
+
+/* scroll reveal */
+const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} }),{threshold:.12});
+document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+
+/* hero: animated fleet illustration on a city grid */
+(function(){
+  const c = document.getElementById("fleet"), x = c.getContext("2d");
+  let W,H,S, cars=[];
+  const N=12;
+  function size(){
+    const r=c.getBoundingClientRect(), d=window.devicePixelRatio||1;
+    W=r.width; H=r.height; c.width=W*d; c.height=H*d; x.setTransform(d,0,0,d,0,0); S=W/N;
+    cars = Array.from({length:9},(_,i)=>newCar(i===0));
+  }
+  function newCar(hl){
+    const horiz=Math.random()<.5, line=1+Math.floor(Math.random()*(N-1));
+    return {horiz, line, p:Math.random()*W, v:(.35+Math.random()*.55)*(Math.random()<.5?-1:1), hl};
+  }
+  function draw(){
+    x.clearRect(0,0,W,H);
+    x.strokeStyle="rgba(255,255,255,.06)"; x.lineWidth=1;
+    for(let i=1;i<N;i++){ x.beginPath(); x.moveTo(i*S,0); x.lineTo(i*S,H); x.moveTo(0,i*S); x.lineTo(W,i*S); x.stroke(); }
+    x.strokeStyle="rgba(255,255,255,.14)"; x.lineWidth=2;
+    [3,8].forEach(i=>{ x.beginPath(); x.moveTo(i*S,0); x.lineTo(i*S,H); x.moveTo(0,i*S); x.lineTo(W,i*S); x.stroke(); });
+    cars.forEach(k=>{
+      k.p+=k.v; if(k.p<-10||k.p>W+10){ Object.assign(k,newCar(k.hl)); k.p=k.v>0?-8:W+8; }
+      const px=k.horiz?k.p:k.line*S, py=k.horiz?k.line*S:k.p;
+      const col=k.hl?"255,184,0":"90,169,255";
+      const g=x.createRadialGradient(px,py,0,px,py,16); g.addColorStop(0,`rgba(${col},.45)`); g.addColorStop(1,`rgba(${col},0)`);
+      x.fillStyle=g; x.beginPath(); x.arc(px,py,16,0,7); x.fill();
+      x.fillStyle=`rgb(${col})`; x.beginPath(); x.arc(px,py,k.hl?4.5:3.2,0,7); x.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  size(); addEventListener("resize",size);
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches){ cars.forEach(k=>k.v=0); }
+  draw();
+})();
+</script>
+</body>
+</html>
